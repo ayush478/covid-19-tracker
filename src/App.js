@@ -8,12 +8,14 @@ import {
 } from '@material-ui/core';
 
 import './App.css';
+import numeral from 'numeral';
 import InfoBox from './infoBox';
 import Map from './Map';
 import 'leaflet/dist/leaflet.css';
 import Table from './table';
 import { sortData, prettyPrintStat } from './util';
 import LineGraph from './LineGraph';
+import "./InfoBox.css";
 
 function App() {
   const [countries, setCountries] = useState([]);
@@ -102,34 +104,50 @@ function App() {
         </div>
 
         {/*title + select input dropdown field*/}
-        <div className='app__stats'>
+        <div className="app__stats">
           <InfoBox
-            onClick={(e) => setCasesType('cases')}
-            title='coronavirus cases'
+            isRed
+            active={casesType === "cases"}
+            className="infoBox__cases"
+            onClick={(e) => setCasesType("cases")}
+            title="Coronavirus Cases"
+            total={prettyPrintStat(countryInfo.cases)}
             cases={prettyPrintStat(countryInfo.todayCases)}
-            total={countryInfo.cases}
-          ></InfoBox>
+            isloading={isLoading}
+          />
           <InfoBox
-            onClick={(e) => setCasesType('recovered')}
-            title='Recovered'
+            active={casesType === "recovered"}
+            className="infoBox__recovered"
+            onClick={(e) => setCasesType("recovered")}
+            title="Recovered"
+            total={prettyPrintStat(countryInfo.recovered)}
             cases={prettyPrintStat(countryInfo.todayRecovered)}
-            total={countryInfo.recovered}
-          ></InfoBox>
+            isloading={isLoading}
+          />
           <InfoBox
-            onClick={(e) => setCasesType('deaths')}
-            title='deaths'
+            isGrey
+            active={casesType === "deaths"}
+            className="infoBox__deaths"
+            onClick={(e) => setCasesType("deaths")}
+            title="Deaths"
+            total={prettyPrintStat(countryInfo.deaths)}
             cases={prettyPrintStat(countryInfo.todayDeaths)}
-            total={countryInfo.deaths}
-          ></InfoBox>
+            isloading={isLoading}
+          />
         </div>
-        <Map casesType={casesType} countries={mapCountries} center={mapCenter} zoom={mapZoom} />
+        <Map
+          casesType={casesType}
+          countries={mapCountries}
+          center={mapCenter}
+          zoom={mapZoom}
+        />
       </div>
       <Card className='app__right'>
         <CardContent>
           <h3>Live cases by country</h3>
           <Table countries={tableData} />
-          <h3>Worldwide new {casesType}</h3>
-          <LineGraph casesType={casesType}/>
+          <h3 className="app__graphTitle">Worldwide new {casesType}</h3>
+          <LineGraph className='app__graph' casesType={casesType} />
         </CardContent>
       </Card>
     </div>
